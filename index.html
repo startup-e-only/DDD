@@ -1,0 +1,2322 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>👩‍🦰DDD</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            min-height: 100vh;
+            min-height: 100dvh;
+            overflow-x: hidden;
+        }
+
+        * {
+            -webkit-touch-callout: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #00ae00;
+            border-radius: 10px;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid #00ae00;
+            border-radius: 16px;
+        }
+
+        .glass-light {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid #00ae00;
+            border-radius: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid #00ae00;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: rgba(0, 174, 0, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 174, 0, 0.08);
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-purple {
+            border-color: #8B5CF6;
+            background: rgba(139, 92, 246, 0.08);
+        }
+        .btn-purple:hover {
+            background: rgba(139, 92, 246, 0.2);
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.1);
+        }
+
+        .btn-yellow {
+            border-color: #FBBF24;
+            background: rgba(251, 191, 36, 0.08);
+        }
+        .btn-yellow:hover {
+            background: rgba(251, 191, 36, 0.2);
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.1);
+        }
+
+        .btn-blue {
+            border-color: #3B82F6;
+            background: rgba(59, 130, 246, 0.08);
+        }
+        .btn-blue:hover {
+            background: rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-danger {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.08);
+        }
+        .btn-danger:hover {
+            background: rgba(239, 68, 68, 0.2);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.1);
+        }
+
+        .btn-success {
+            border-color: #00ae00;
+            background: rgba(0, 174, 0, 0.08);
+        }
+        .btn-success:hover {
+            background: rgba(0, 174, 0, 0.2);
+            box-shadow: 0 0 30px rgba(0, 174, 0, 0.1);
+        }
+
+        .logo-svg {
+            width: clamp(80px, 15vw, 160px);
+            height: clamp(80px, 15vw, 160px);
+            display: block;
+            margin: 0 auto;
+        }
+
+        .logo-svg-small {
+            width: clamp(40px, 6vw, 64px);
+            height: clamp(40px, 6vw, 64px);
+            display: block;
+        }
+
+        /* ===== ЭКРАН ЗАГРУЗКИ ===== */
+        #loadingScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0f;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease;
+        }
+
+        #loadingScreen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-title {
+            font-size: clamp(20px, 3vw, 36px);
+            font-weight: 700;
+            color: #00ae00;
+            margin-top: 12px;
+            text-shadow: 0 0 40px rgba(0, 174, 0, 0.2);
+        }
+
+        .loading-subtitle {
+            font-size: clamp(12px, 1.5vw, 18px);
+            color: #888;
+            margin-bottom: 32px;
+        }
+
+        .loading-container {
+            width: min(80%, 400px);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #00ae00;
+            margin: 16px 0;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #8B5CF6, #3B82F6, #FBBF24);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            color: #888;
+            margin-top: 8px;
+        }
+
+        .loading-status {
+            font-size: 14px;
+            color: #666;
+            margin-top: 12px;
+            min-height: 24px;
+        }
+
+        /* ===== ЭКРАН ВХОДА ===== */
+        #loginScreen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 20px;
+            width: 100%;
+        }
+
+        #loginScreen.active {
+            display: flex;
+        }
+
+        .login-title {
+            font-size: clamp(18px, 2.5vw, 32px);
+            font-weight: 700;
+            color: #00ae00;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .login-sub {
+            font-size: clamp(16px, 2vw, 24px);
+            color: #fff;
+            margin: 12px 0 32px 0;
+            text-align: center;
+        }
+
+        .login-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .login-buttons .btn {
+            font-size: clamp(18px, 2.5vw, 28px);
+            padding: 20px 48px;
+            min-width: 160px;
+        }
+
+        /* ===== ЭКРАН ПАРОЛЯ ===== */
+        #passwordScreen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 20px;
+            width: 100%;
+        }
+
+        #passwordScreen.active {
+            display: flex;
+        }
+
+        .password-container {
+            width: min(90%, 400px);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .password-title {
+            font-size: clamp(18px, 2.5vw, 28px);
+            color: #00ae00;
+            margin-top: 8px;
+        }
+
+        .password-sub {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 24px;
+        }
+
+        .password-display {
+            font-size: 32px;
+            letter-spacing: 16px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid #00ae00;
+            margin-bottom: 24px;
+            min-height: 68px;
+            font-family: monospace;
+            color: #00ae00;
+            text-align: center;
+        }
+
+        .password-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .password-grid .btn {
+            padding: 16px;
+            font-size: 24px;
+            min-width: unset;
+            width: 100%;
+        }
+
+        .password-grid .btn-empty {
+            visibility: hidden;
+        }
+
+        .password-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .password-actions .btn {
+            font-size: 14px;
+            padding: 10px 20px;
+            min-width: 100px;
+        }
+
+        /* ===== ВЫБОР РЕБЕНКА ===== */
+        #childSelectScreen {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 20px;
+            width: 100%;
+        }
+
+        #childSelectScreen.active {
+            display: flex;
+        }
+
+        .child-select-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .child-select-title {
+            font-size: clamp(20px, 3vw, 32px);
+            color: #00ae00;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .child-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+            flex: 1;
+            align-content: start;
+        }
+
+        .child-card {
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .child-card:hover {
+            transform: translateY(-4px);
+            background: rgba(0, 174, 0, 0.08);
+            box-shadow: 0 0 40px rgba(0, 174, 0, 0.05);
+        }
+
+        .child-card .child-name {
+            font-size: clamp(20px, 2.5vw, 28px);
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .child-card .child-emoji {
+            font-size: clamp(40px, 5vw, 64px);
+            margin-bottom: 8px;
+        }
+
+        .child-card .child-count {
+            font-size: 13px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* ===== ЛЕНТА ДЕЛ ===== */
+        #feedScreen {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 16px;
+            width: 100%;
+        }
+
+        #feedScreen.active {
+            display: flex;
+        }
+
+        .feed-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            background: #0a0a0f;
+            z-index: 10;
+            padding-bottom: 12px;
+        }
+
+        .feed-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .feed-header .btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            min-width: unset;
+        }
+
+        .feed-child-name {
+            font-size: clamp(18px, 2.5vw, 28px);
+            color: #00ae00;
+            font-weight: 600;
+        }
+
+        .feed-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .feed-content {
+            flex: 1;
+            padding-bottom: 20px;
+        }
+
+        .day-group {
+            margin-bottom: 20px;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid #00ae00;
+        }
+
+        .day-group.day-yellow {
+            background: rgba(251, 191, 36, 0.06);
+            border-color: #FBBF24;
+        }
+
+        .day-group.day-blue {
+            background: rgba(59, 130, 246, 0.06);
+            border-color: #3B82F6;
+        }
+
+        .day-group.day-purple {
+            background: rgba(139, 92, 246, 0.06);
+            border-color: #8B5CF6;
+        }
+
+        .day-header {
+            font-size: clamp(16px, 2vw, 22px);
+            font-weight: 600;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0, 174, 0, 0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .day-header .day-date {
+            color: #fff;
+        }
+
+        .day-header .day-empty-badge {
+            font-size: 12px;
+            color: #ef4444;
+            font-weight: 400;
+        }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            margin-bottom: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            border-left: 2px solid #00ae00;
+            gap: 10px;
+        }
+
+        .task-item .task-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-item .task-time {
+            font-size: 13px;
+            color: #888;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .task-item .task-category {
+            font-size: 12px;
+            color: #8B5CF6;
+            font-weight: 500;
+        }
+
+        .task-item .task-text {
+            font-size: 15px;
+            color: #e0e0e0;
+            word-break: break-word;
+        }
+
+        .task-item .task-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .task-item .task-actions .btn {
+            padding: 4px 10px;
+            font-size: 12px;
+            min-width: unset;
+        }
+
+        .empty-day-message {
+            padding: 12px 16px;
+            color: #ef4444;
+            font-size: 14px;
+            border-left: 2px solid #ef4444;
+            margin-bottom: 4px;
+            background: rgba(239, 68, 68, 0.04);
+            border-radius: 8px;
+        }
+
+        /* ===== МОДАЛЬНОЕ ОКНО ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            width: min(95%, 500px);
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid #00ae00;
+            border-radius: 16px;
+            position: relative;
+        }
+
+        .modal-content .modal-logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .modal-content h2 {
+            color: #00ae00;
+            font-size: clamp(18px, 2.5vw, 24px);
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .modal-content .modal-close {
+            float: right;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .modal-content .modal-close:hover {
+            color: #fff;
+        }
+
+        .modal-content label {
+            display: block;
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 4px;
+            margin-top: 12px;
+        }
+
+        .modal-content input,
+        .modal-content select {
+            width: 100%;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #00ae00;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .modal-content input:focus,
+        .modal-content select:focus {
+            border-color: #8B5CF6;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.08);
+        }
+
+        .modal-content select option {
+            background: #1a1a2e;
+        }
+
+        .modal-content .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .modal-content .btn-group .btn {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        /* ===== ПРОГРЕСС-БАР ПОВЕРХ ===== */
+        .save-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .save-overlay.active {
+            display: flex;
+        }
+
+        .save-overlay .circle-progress {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid rgba(0, 174, 0, 0.15);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .save-overlay .circle-progress svg {
+            transform: rotate(-90deg);
+            width: 120px;
+            height: 120px;
+        }
+
+        .save-overlay .circle-progress svg circle {
+            fill: none;
+            stroke-width: 6;
+            stroke-linecap: round;
+        }
+
+        .save-overlay .circle-progress .bg-circle {
+            stroke: rgba(0, 174, 0, 0.15);
+        }
+
+        .save-overlay .circle-progress .progress-circle {
+            stroke: #00ae00;
+            stroke-dasharray: 339.29;
+            stroke-dashoffset: 339.29;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .save-overlay .circle-progress .progress-text {
+            position: absolute;
+            font-size: 20px;
+            color: #00ae00;
+            font-weight: 600;
+        }
+
+        .save-overlay .circle-progress .checkmark {
+            display: none;
+            font-size: 48px;
+            color: #00ae00;
+        }
+
+        .save-overlay .circle-progress.done .progress-text {
+            display: none;
+        }
+
+        .save-overlay .circle-progress.done .checkmark {
+            display: block;
+        }
+
+        .save-overlay .circle-progress.done .progress-circle {
+            stroke: #00ae00;
+            stroke-dashoffset: 0;
+        }
+
+        .save-overlay .save-status-text {
+            color: #888;
+            font-size: 16px;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        /* ===== ДИАГРАММЫ ===== */
+        #chartScreen {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding: 16px;
+            width: 100%;
+        }
+
+        #chartScreen.active {
+            display: flex;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .chart-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+            gap: 24px;
+        }
+
+        .chart-box {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .chart-box canvas {
+            max-width: 100%;
+            max-height: 300px;
+        }
+
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        .chart-legend-item .color-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ===== КАЛЕНДАРЬ ===== */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin: 8px 0;
+        }
+
+        .calendar-grid .day-cell {
+            padding: 8px 4px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .calendar-grid .day-cell:hover {
+            background: rgba(0, 174, 0, 0.08);
+            border-color: #00ae00;
+        }
+
+        .calendar-grid .day-cell.selected {
+            background: rgba(0, 174, 0, 0.15);
+            border-color: #00ae00;
+        }
+
+        .calendar-grid .day-cell.other-month {
+            color: #444;
+        }
+
+        .calendar-grid .day-cell.weekday {
+            color: #666;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: default;
+        }
+
+        .calendar-grid .day-cell.weekday:hover {
+            background: transparent;
+            border-color: transparent;
+        }
+
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 8px 0;
+            gap: 12px;
+        }
+
+        .calendar-nav .btn {
+            padding: 6px 16px;
+            font-size: 14px;
+            min-width: unset;
+        }
+
+        .calendar-nav .month-year {
+            font-size: 16px;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* ===== ВРЕМЯ ===== */
+        .time-selectors {
+            display: flex;
+            gap: 8px;
+            flex-wrap: nowrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .time-selectors select {
+            flex: 0 1 auto;
+            min-width: 60px;
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #00ae00;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            appearance: auto;
+        }
+
+        .time-selectors select:focus {
+            border-color: #8B5CF6;
+        }
+
+        .time-selectors select option {
+            background: #1a1a2e;
+        }
+
+        .time-selectors .time-sep {
+            color: #888;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        /* ===== АДАПТИВНОСТЬ ===== */
+        @media (max-width: 600px) {
+            .btn {
+                padding: 10px 16px;
+                font-size: 14px;
+                min-width: 80px;
+            }
+
+            .login-buttons .btn {
+                padding: 16px 32px;
+                font-size: 20px;
+                min-width: 120px;
+            }
+
+            .child-grid {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 12px;
+            }
+
+            .child-card {
+                padding: 16px;
+                min-height: 90px;
+            }
+
+            .password-grid {
+                max-width: 240px;
+            }
+
+            .password-grid .btn {
+                padding: 14px;
+                font-size: 20px;
+            }
+
+            .password-display {
+                font-size: 26px;
+                letter-spacing: 12px;
+                padding: 12px;
+                min-height: 56px;
+            }
+
+            .modal-content {
+                padding: 16px;
+                width: 98%;
+            }
+
+            .time-selectors select {
+                min-width: 50px;
+                font-size: 13px;
+                padding: 6px 8px;
+            }
+
+            .time-selectors .time-sep {
+                font-size: 13px;
+            }
+
+            .calendar-grid .day-cell {
+                padding: 6px 2px;
+                font-size: 12px;
+            }
+
+            .task-item {
+                padding: 8px 10px;
+                flex-wrap: wrap;
+            }
+
+            .task-item .task-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .task-item .task-time {
+                font-size: 12px;
+                white-space: nowrap;
+            }
+
+            .feed-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .feed-header-left {
+                justify-content: space-between;
+            }
+
+            .feed-actions {
+                justify-content: stretch;
+            }
+
+            .feed-actions .btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            .chart-box {
+                padding: 12px;
+            }
+
+            .save-overlay .circle-progress {
+                width: 100px;
+                height: 100px;
+            }
+
+            .save-overlay .circle-progress svg {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .child-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .password-grid {
+                max-width: 200px;
+                gap: 6px;
+            }
+
+            .password-grid .btn {
+                padding: 12px;
+                font-size: 18px;
+            }
+
+            .password-display {
+                font-size: 22px;
+                letter-spacing: 8px;
+                min-height: 48px;
+            }
+
+            .time-selectors select {
+                min-width: 40px;
+                font-size: 12px;
+                padding: 4px 6px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .child-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .feed-content {
+                padding: 0 20px;
+            }
+
+            .time-selectors select {
+                min-width: 70px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .feed-content {
+                padding: 0 40px;
+            }
+
+            .child-grid {
+                grid-template-columns: repeat(3, 1fr);
+                max-width: 700px;
+                margin: 20px auto 0;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-muted {
+            color: #666;
+        }
+
+        .mt-8 {
+            margin-top: 8px;
+        }
+        .mb-8 {
+            margin-bottom: 8px;
+        }
+        .mt-16 {
+            margin-top: 16px;
+        }
+        .mb-16 {
+            margin-bottom: 16px;
+        }
+
+        .flex-1 {
+            flex: 1;
+        }
+
+        .gap-8 {
+            gap: 8px;
+        }
+        .gap-12 {
+            gap: 12px;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        .relative {
+            position: relative;
+        }
+
+        .z-10 {
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== ЭКРАН ЗАГРУЗКИ ===== -->
+    <div id="loadingScreen">
+        <svg class="logo-svg" viewBox="0 0 512 512">
+            <defs>
+                <radialGradient id="bg" cx="50%" cy="35%">
+                    <stop offset="0%" stop-color="#22252F"/>
+                    <stop offset="100%" stop-color="#090A0F"/>
+                </radialGradient>
+                <linearGradient id="gradD" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#8A2BE2"/>
+                    <stop offset="50%" stop-color="#2F6BFF"/>
+                    <stop offset="100%" stop-color="#FFD400"/>
+                </linearGradient>
+                <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="8" result="blur"/>
+                    <feMerge>
+                        <feMergeNode in="blur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            <rect x="16" y="16" width="480" height="480" rx="80" fill="url(#bg)" stroke="#1B1F2C" stroke-width="4"/>
+            <rect x="24" y="24" width="464" height="464" rx="72" fill="none" stroke="#2A2F40" stroke-width="2"/>
+            <path d="M150 96 L150 416 L250 416 C365 416 420 350 420 256 C420 162 365 96 250 96 Z M215 155 L245 155 C320 155 355 195 355 256 C355 317 320 357 245 357 L215 357 Z" fill="url(#gradD)" stroke="#00AE00" stroke-width="12" stroke-linejoin="round" filter="url(#glow)"/>
+        </svg>
+        <div class="loading-title">👩‍🦰DDD</div>
+        <div class="loading-subtitle">Dnevnik delov detey</div>
+        <div class="loading-container glass">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">0%</div>
+            <div class="loading-status" id="loadingStatus">Подготовка к загрузке...</div>
+        </div>
+    </div>
+
+    <!-- ===== ЭКРАН ВХОДА ===== -->
+    <div id="loginScreen">
+        <svg class="logo-svg" viewBox="0 0 512 512">
+            <defs>
+                <radialGradient id="bg2" cx="50%" cy="35%">
+                    <stop offset="0%" stop-color="#22252F"/>
+                    <stop offset="100%" stop-color="#090A0F"/>
+                </radialGradient>
+                <linearGradient id="gradD2" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#8A2BE2"/>
+                    <stop offset="50%" stop-color="#2F6BFF"/>
+                    <stop offset="100%" stop-color="#FFD400"/>
+                </linearGradient>
+                <filter id="glow2" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="8" result="blur"/>
+                    <feMerge>
+                        <feMergeNode in="blur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            <rect x="16" y="16" width="480" height="480" rx="80" fill="url(#bg2)" stroke="#1B1F2C" stroke-width="4"/>
+            <rect x="24" y="24" width="464" height="464" rx="72" fill="none" stroke="#2A2F40" stroke-width="2"/>
+            <path d="M150 96 L150 416 L250 416 C365 416 420 350 420 256 C420 162 365 96 250 96 Z M215 155 L245 155 C320 155 355 195 355 256 C355 317 320 357 245 357 L215 357 Z" fill="url(#gradD2)" stroke="#00AE00" stroke-width="12" stroke-linejoin="round" filter="url(#glow2)"/>
+        </svg>
+        <div class="login-title">👩‍🦰DDD</div>
+        <div class="login-sub">Кто входит в систему?</div>
+        <div class="login-buttons">
+            <button class="btn btn-purple" onclick="loginAsChild()">👶 Дети</button>
+            <button class="btn btn-yellow" onclick="loginAsParent()">👨‍👩‍👧 Родитель</button>
+        </div>
+    </div>
+
+    <!-- ===== ЭКРАН ПАРОЛЯ ===== -->
+    <div id="passwordScreen">
+        <div class="password-container glass">
+            <svg class="logo-svg-small" viewBox="0 0 512 512" style="margin:0 auto 8px;">
+                <defs>
+                    <radialGradient id="bg3" cx="50%" cy="35%">
+                        <stop offset="0%" stop-color="#22252F"/>
+                        <stop offset="100%" stop-color="#090A0F"/>
+                    </radialGradient>
+                    <linearGradient id="gradD3" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#8A2BE2"/>
+                        <stop offset="50%" stop-color="#2F6BFF"/>
+                        <stop offset="100%" stop-color="#FFD400"/>
+                    </linearGradient>
+                    <filter id="glow3" x="-50%" y="-50%" width="200%" height="200%">
+                        <feGaussianBlur stdDeviation="4" result="blur"/>
+                        <feMerge>
+                            <feMergeNode in="blur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <rect x="16" y="16" width="480" height="480" rx="80" fill="url(#bg3)" stroke="#1B1F2C" stroke-width="4"/>
+                <rect x="24" y="24" width="464" height="464" rx="72" fill="none" stroke="#2A2F40" stroke-width="2"/>
+                <path d="M150 96 L150 416 L250 416 C365 416 420 350 420 256 C420 162 365 96 250 96 Z M215 155 L245 155 C320 155 355 195 355 256 C355 317 320 357 245 357 L215 357 Z" fill="url(#gradD3)" stroke="#00AE00" stroke-width="12" stroke-linejoin="round" filter="url(#glow3)"/>
+            </svg>
+            <div class="password-title" id="passwordTitle">🔑 Введите пароль</div>
+            <div class="password-sub" id="passwordSub">Введите 4 цифры</div>
+            <div class="password-display" id="passwordDisplay">_ _ _ _</div>
+            <div class="password-grid" id="passwordGrid">
+                <button class="btn" onclick="passwordInput('1')">1</button>
+                <button class="btn" onclick="passwordInput('2')">2</button>
+                <button class="btn" onclick="passwordInput('3')">3</button>
+                <button class="btn" onclick="passwordInput('4')">4</button>
+                <button class="btn" onclick="passwordInput('5')">5</button>
+                <button class="btn" onclick="passwordInput('6')">6</button>
+                <button class="btn" onclick="passwordInput('7')">7</button>
+                <button class="btn" onclick="passwordInput('8')">8</button>
+                <button class="btn" onclick="passwordInput('9')">9</button>
+                <button class="btn btn-empty"></button>
+                <button class="btn" onclick="passwordInput('0')">0</button>
+                <button class="btn btn-danger" onclick="passwordBackspace()">⌫</button>
+            </div>
+            <div class="password-actions">
+                <button class="btn btn-danger" onclick="passwordClear()">Очистить</button>
+                <button class="btn btn-success" id="passwordSaveBtn" style="display:none;" onclick="saveNewPassword()">💾 Сохранить пароль</button>
+            </div>
+            <div id="passwordError" style="color:#ef4444; font-size:14px; margin-top:12px; min-height:20px;"></div>
+        </div>
+    </div>
+
+    <!-- ===== ВЫБОР РЕБЕНКА ===== -->
+    <div id="childSelectScreen">
+        <div class="child-select-header">
+            <div class="child-select-title">
+                <svg class="logo-svg-small" viewBox="0 0 512 512">
+                    <defs>
+                        <radialGradient id="bg4" cx="50%" cy="35%">
+                            <stop offset="0%" stop-color="#22252F"/>
+                            <stop offset="100%" stop-color="#090A0F"/>
+                        </radialGradient>
+                        <linearGradient id="gradD4" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#8A2BE2"/>
+                            <stop offset="50%" stop-color="#2F6BFF"/>
+                            <stop offset="100%" stop-color="#FFD400"/>
+                        </linearGradient>
+                        <filter id="glow4" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="4" result="blur"/>
+                            <feMerge>
+                                <feMergeNode in="blur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <rect x="16" y="16" width="480" height="480" rx="80" fill="url(#bg4)" stroke="#1B1F2C" stroke-width="4"/>
+                    <rect x="24" y="24" width="464" height="464" rx="72" fill="none" stroke="#2A2F40" stroke-width="2"/>
+                    <path d="M150 96 L150 416 L250 416 C365 416 420 350 420 256 C420 162 365 96 250 96 Z M215 155 L245 155 C320 155 355 195 355 256 C355 317 320 357 245 357 L215 357 Z" fill="url(#gradD4)" stroke="#00AE00" stroke-width="12" stroke-linejoin="round" filter="url(#glow4)"/>
+                </svg>
+                Выберите ребенка
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn btn-purple" onclick="showCharts()">📊 Отчёт</button>
+                <button class="btn btn-danger" onclick="logout()">🚪 Выход</button>
+            </div>
+        </div>
+        <div class="child-grid" id="childGrid">
+            <!-- Дети будут добавлены через JS -->
+        </div>
+    </div>
+
+    <!-- ===== ЛЕНТА ДЕЛ ===== -->
+    <div id="feedScreen">
+        <div class="feed-header">
+            <div class="feed-header-left">
+                <button class="btn" onclick="goBackToChildren()">← Назад</button>
+                <span class="feed-child-name" id="feedChildName">Ермак</span>
+            </div>
+            <div class="feed-actions">
+                <button class="btn btn-success" id="addTaskBtn" onclick="openAddTaskModal()" style="display:none;">➕ Добавить</button>
+                <button class="btn btn-purple" onclick="showCharts()">📊 Отчёт</button>
+            </div>
+        </div>
+        <div class="feed-content" id="feedContent">
+            <!-- Лента дел будет добавлена через JS -->
+        </div>
+    </div>
+
+    <!-- ===== ДИАГРАММЫ ===== -->
+    <div id="chartScreen">
+        <div class="chart-header">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <button class="btn" onclick="goBackFromCharts()">← Назад</button>
+                <span style="font-size:clamp(18px,2.5vw,28px); color:#00ae00; font-weight:600;">📊 Отчёт</span>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn btn-blue" id="chartBarBtn" onclick="showBarChart()">📊 Столбчатая</button>
+                <button class="btn btn-purple" id="chartPieBtn" onclick="showPieChart()">📊 Круговая</button>
+            </div>
+        </div>
+        <div class="chart-container" id="chartContainer">
+            <div class="chart-box glass">
+                <canvas id="chartCanvas"></canvas>
+                <div class="chart-legend" id="chartLegend"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== МОДАЛЬНОЕ ОКНО ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content" id="modalContent">
+            <button class="modal-close" onclick="closeModal()">✕</button>
+            <div class="modal-logo">
+                <svg class="logo-svg-small" viewBox="0 0 512 512">
+                    <defs>
+                        <radialGradient id="bgModal" cx="50%" cy="35%">
+                            <stop offset="0%" stop-color="#22252F"/>
+                            <stop offset="100%" stop-color="#090A0F"/>
+                        </radialGradient>
+                        <linearGradient id="gradDModal" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#8A2BE2"/>
+                            <stop offset="50%" stop-color="#2F6BFF"/>
+                            <stop offset="100%" stop-color="#FFD400"/>
+                        </linearGradient>
+                        <filter id="glowModal" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur stdDeviation="4" result="blur"/>
+                            <feMerge>
+                                <feMergeNode in="blur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                    <rect x="16" y="16" width="480" height="480" rx="80" fill="url(#bgModal)" stroke="#1B1F2C" stroke-width="4"/>
+                    <rect x="24" y="24" width="464" height="464" rx="72" fill="none" stroke="#2A2F40" stroke-width="2"/>
+                    <path d="M150 96 L150 416 L250 416 C365 416 420 350 420 256 C420 162 365 96 250 96 Z M215 155 L245 155 C320 155 355 195 355 256 C355 317 320 357 245 357 L215 357 Z" fill="url(#gradDModal)" stroke="#00AE00" stroke-width="12" stroke-linejoin="round" filter="url(#glowModal)"/>
+                </svg>
+            </div>
+            <h2 id="modalTitle">Добавить дело</h2>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- ===== ПРОГРЕСС-БАР ПОВЕРХ ===== -->
+    <div class="save-overlay" id="saveOverlay">
+        <div style="display:flex; flex-direction:column; align-items:center;">
+            <div class="circle-progress" id="circleProgress">
+                <svg viewBox="0 0 120 120">
+                    <circle class="bg-circle" cx="60" cy="60" r="54"/>
+                    <circle class="progress-circle" id="progressCircle" cx="60" cy="60" r="54"/>
+                </svg>
+                <span class="progress-text" id="circleText">0%</span>
+                <span class="checkmark">✅</span>
+            </div>
+            <div class="save-status-text" id="saveStatusText">Сохранение...</div>
+        </div>
+    </div>
+
+    <script>
+        // ===== КОНФИГ =====
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3-zwqxNK5iIv-O2E_7myVJEnjiygqH9g5VDDRoHixIaqum6DLZn2X_zV-aZ_mhOnwSg/exec';
+
+        const CHILDREN = [
+            { name: 'Ермак', emoji: '🧑' },
+            { name: 'Платон', emoji: '👦' },
+            { name: 'Летиция', emoji: '👧' }
+        ];
+
+        const CATEGORIES = {
+            'Уроки': ['Математика', 'Русский язык', 'Английский язык', 'Литература', 'Физика', 'Химия', 'Биология', 'История',
+                'География', 'Информатика', 'Физкультура', 'ИЗО', 'Музыка', 'Технология', 'ОБЖ'
+            ],
+            'Дело по дому': ['Мыл пол', 'Протирал пыль', 'Стирал бельё', 'Мыл посуду', 'Заправлял постель', 'Готовил еду',
+                'Поливал цветы', 'Выносил мусор', 'Убирал в комнате', 'Гладил вещи'
+            ],
+            'Качество': ['Доброта', 'Честность', 'Трудолюбие', 'Ответственность', 'Уважение', 'Дисциплина', 'Терпение',
+                'Смелость', 'Скромность', 'Щедрость'
+            ]
+        };
+
+        // ===== СОСТОЯНИЕ =====
+        let allData = [];
+        let currentChild = null;
+        let isParent = false;
+        let currentPassword = '';
+        let passwordValue = '';
+        let passwordConfirmValue = '';
+        let isNewPassword = false;
+        let selectedDate = new Date();
+        let editingTaskIndex = -1;
+        let isSaving = false;
+
+        // ===== ЗАГРУЗКА =====
+        let progress = 0;
+        const statusMessages = [
+            'Подключение к Google Drive...',
+            'Чтение данных...',
+            'Парсинг записей...',
+            'Группировка по детям...',
+            'Подготовка интерфейса...'
+        ];
+
+        async function startLoading() {
+            const fill = document.getElementById('progressFill');
+            const text = document.getElementById('progressText');
+            const status = document.getElementById('loadingStatus');
+
+            for (let i = 0; i <= 100; i += 2) {
+                progress = i;
+                fill.style.width = progress + '%';
+                text.textContent = progress + '%';
+                const idx = Math.min(Math.floor(progress / 20), statusMessages.length - 1);
+                status.textContent = statusMessages[idx];
+                await sleep(30);
+            }
+
+            await loadData();
+            document.getElementById('loadingScreen').classList.add('hidden');
+            document.getElementById('loginScreen').classList.add('active');
+
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            }
+        }
+
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        // ===== ЗАГРУЗКА ДАННЫХ =====
+        async function loadData() {
+            try {
+                const url = SCRIPT_URL + '?action=read';
+                const response = await fetch(url);
+                const result = await response.json();
+
+                if (result.success) {
+                    const content = result.content || '';
+                    parseData(content);
+                } else {
+                    console.error('Ошибка загрузки:', result.error);
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        }
+
+        function parseData(content) {
+            allData = [];
+            const lines = content.split('\n').filter(l => l.trim());
+
+            if (lines.length === 0) return;
+
+            const firstLine = lines[0].trim();
+            if (firstLine.startsWith('PASSORD_')) {
+                currentPassword = firstLine.replace('PASSORD_', '');
+            }
+
+            let currentEntry = null;
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+
+                if (line.startsWith('NAME_')) {
+                    if (currentEntry) {
+                        allData.push(currentEntry);
+                    }
+                    currentEntry = {
+                        name: line.replace('NAME_', ''),
+                        date: '',
+                        time: '',
+                        category: '',
+                        delo: ''
+                    };
+                } else if (line.startsWith('DATE_')) {
+                    if (currentEntry) currentEntry.date = line.replace('DATE_', '');
+                } else if (line.startsWith('TIME_')) {
+                    if (currentEntry) currentEntry.time = line.replace('TIME_', '');
+                } else if (line.startsWith('CATEGORY_')) {
+                    if (currentEntry) currentEntry.category = line.replace('CATEGORY_', '');
+                } else if (line.startsWith('DELO_')) {
+                    if (currentEntry) currentEntry.delo = line.replace('DELO_', '');
+                }
+            }
+
+            if (currentEntry) {
+                allData.push(currentEntry);
+            }
+
+            renderChildren();
+        }
+
+        // ===== ОТРИСОВКА ДЕТЕЙ =====
+        function renderChildren() {
+            const grid = document.getElementById('childGrid');
+            grid.innerHTML = '';
+
+            CHILDREN.forEach(child => {
+                const count = allData.filter(d => d.name === child.name).length;
+                const card = document.createElement('div');
+                card.className = 'child-card glass';
+                card.innerHTML = `
+                    <div class="child-emoji">${child.emoji}</div>
+                    <div class="child-name">${child.name}</div>
+                    <div class="child-count">${count} дел</div>
+                `;
+                card.onclick = () => openFeed(child.name);
+                grid.appendChild(card);
+            });
+        }
+
+        // ===== ВХОД =====
+        function loginAsChild() {
+            isParent = false;
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('childSelectScreen').classList.add('active');
+        }
+
+        function loginAsParent() {
+            isParent = true;
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('passwordScreen').classList.add('active');
+            
+            passwordValue = '';
+            passwordConfirmValue = '';
+            isNewPassword = false;
+            
+            if (currentPassword) {
+                document.getElementById('passwordTitle').textContent = '🔑 Введите пароль';
+                document.getElementById('passwordSub').textContent = 'Введите 4 цифры';
+                document.getElementById('passwordSaveBtn').style.display = 'none';
+            } else {
+                document.getElementById('passwordTitle').textContent = '🔐 Создайте пароль';
+                document.getElementById('passwordSub').textContent = 'Придумайте пароль (4 цифры)';
+                document.getElementById('passwordSaveBtn').style.display = 'block';
+            }
+            document.getElementById('passwordError').textContent = '';
+            updatePasswordDisplay();
+        }
+
+        // ===== ПАРОЛЬ =====
+        function passwordInput(digit) {
+            if (currentPassword) {
+                if (passwordValue.length < 4) {
+                    passwordValue += digit;
+                    updatePasswordDisplay();
+                    
+                    if (passwordValue.length === 4) {
+                        if (passwordValue === currentPassword) {
+                            document.getElementById('passwordError').textContent = '';
+                            document.getElementById('passwordScreen').classList.remove('active');
+                            document.getElementById('childSelectScreen').classList.add('active');
+                            passwordValue = '';
+                            updatePasswordDisplay();
+                        } else {
+                            document.getElementById('passwordError').textContent = '❌ Неверный пароль!';
+                            setTimeout(() => {
+                                passwordValue = '';
+                                updatePasswordDisplay();
+                                document.getElementById('passwordError').textContent = '';
+                            }, 1000);
+                        }
+                    }
+                }
+            } else {
+                if (!isNewPassword) {
+                    if (passwordValue.length < 4) {
+                        passwordValue += digit;
+                        updatePasswordDisplay();
+                        
+                        if (passwordValue.length === 4) {
+                            isNewPassword = true;
+                            document.getElementById('passwordTitle').textContent = '🔐 Подтвердите пароль';
+                            document.getElementById('passwordSub').textContent = 'Введите пароль ещё раз';
+                            document.getElementById('passwordError').textContent = '';
+                            passwordConfirmValue = '';
+                            updatePasswordDisplay();
+                        }
+                    }
+                } else {
+                    if (passwordConfirmValue.length < 4) {
+                        passwordConfirmValue += digit;
+                        updatePasswordDisplay();
+                        
+                        if (passwordConfirmValue.length === 4) {
+                            if (passwordConfirmValue === passwordValue) {
+                                currentPassword = passwordConfirmValue;
+                                document.getElementById('passwordError').textContent = '';
+                                savePasswordToFile();
+                            } else {
+                                document.getElementById('passwordError').textContent = '❌ Пароли не совпадают! Попробуйте снова';
+                                isNewPassword = false;
+                                passwordValue = '';
+                                passwordConfirmValue = '';
+                                document.getElementById('passwordTitle').textContent = '🔐 Создайте пароль';
+                                document.getElementById('passwordSub').textContent = 'Придумайте пароль (4 цифры)';
+                                updatePasswordDisplay();
+                                setTimeout(() => {
+                                    document.getElementById('passwordError').textContent = '';
+                                }, 2000);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function passwordBackspace() {
+            if (currentPassword) {
+                if (passwordValue.length > 0) {
+                    passwordValue = passwordValue.slice(0, -1);
+                    updatePasswordDisplay();
+                }
+            } else {
+                if (!isNewPassword) {
+                    if (passwordValue.length > 0) {
+                        passwordValue = passwordValue.slice(0, -1);
+                        updatePasswordDisplay();
+                    }
+                } else {
+                    if (passwordConfirmValue.length > 0) {
+                        passwordConfirmValue = passwordConfirmValue.slice(0, -1);
+                        updatePasswordDisplay();
+                    }
+                }
+            }
+        }
+
+        function passwordClear() {
+            if (currentPassword) {
+                passwordValue = '';
+            } else {
+                if (!isNewPassword) {
+                    passwordValue = '';
+                } else {
+                    passwordConfirmValue = '';
+                }
+            }
+            updatePasswordDisplay();
+            document.getElementById('passwordError').textContent = '';
+        }
+
+        function updatePasswordDisplay() {
+            const display = document.getElementById('passwordDisplay');
+            let value = '';
+            if (currentPassword) {
+                value = passwordValue;
+            } else {
+                if (!isNewPassword) {
+                    value = passwordValue;
+                } else {
+                    value = passwordConfirmValue;
+                }
+            }
+            const dots = value.padEnd(4, '_');
+            display.textContent = dots.split('').join(' ');
+        }
+
+        async function saveNewPassword() {
+            if (!currentPassword) {
+                document.getElementById('passwordError').textContent = '❌ Сначала введите пароль!';
+                return;
+            }
+            await savePasswordToFile();
+        }
+
+        async function savePasswordToFile() {
+            try {
+                const url = SCRIPT_URL + '?action=save&text=' + encodeURIComponent('PASSORD_' + currentPassword);
+                await fetch(url);
+                console.log('Пароль сохранен на Google Drive');
+                setTimeout(() => {
+                    location.reload();
+                }, 500);
+            } catch (error) {
+                console.error('Ошибка сохранения пароля:', error);
+            }
+        }
+
+        // ===== ЛЕНТА ДЕЛ =====
+        function openFeed(childName) {
+            currentChild = childName;
+            document.getElementById('childSelectScreen').classList.remove('active');
+            document.getElementById('feedScreen').classList.add('active');
+            document.getElementById('feedChildName').textContent = childName;
+            
+            document.getElementById('addTaskBtn').style.display = isParent ? 'block' : 'none';
+            renderFeed();
+        }
+
+        function renderFeed() {
+            const container = document.getElementById('feedContent');
+            const childData = allData.filter(d => d.name === currentChild);
+
+            if (childData.length === 0) {
+                container.innerHTML = `
+                    <div class="glass" style="padding:40px;text-align:center;color:#666;">
+                        <div style="font-size:48px;margin-bottom:16px;">📭</div>
+                        <div>Нет дел для ${currentChild}</div>
+                    </div>
+                `;
+                return;
+            }
+
+            const days = {};
+            childData.forEach((item, index) => {
+                if (!days[item.date]) days[item.date] = [];
+                days[item.date].push({...item, index});
+            });
+
+            const sortedDates = Object.keys(days).sort((a, b) => {
+                const [da, ma, ya] = a.split('.');
+                const [db, mb, yb] = b.split('.');
+                return new Date(yb, mb - 1, db) - new Date(ya, ma - 1, da);
+            });
+
+            let html = '';
+            sortedDates.forEach((date, index) => {
+                const tasks = days[date];
+                const dayClass = index === 0 ? 'day-yellow' : index === 1 ? 'day-blue' : 'day-purple';
+                const dateObj = date.split('.');
+                const dateDisplay = `${dateObj[0]} ${getMonthName(parseInt(dateObj[1])-1)} ${dateObj[2]}`;
+
+                html += `<div class="day-group ${dayClass}">`;
+                html += `<div class="day-header">
+                            <span class="day-date">📅 ${dateDisplay}</span>
+                        </div>`;
+
+                const hasLessons = tasks.some(t => t.category === 'Уроки');
+                const hasHousework = tasks.some(t => t.category === 'Дело по дому');
+
+                if (!hasLessons) {
+                    html += `<div class="empty-day-message">📚 Уроки не делал</div>`;
+                }
+                if (!hasHousework) {
+                    html += `<div class="empty-day-message">🏠 Дела не выполнял</div>`;
+                }
+
+                tasks.forEach(task => {
+                    html += `
+                        <div class="task-item">
+                            <div class="task-info">
+                                <div class="task-time">🕐 ${task.time}</div>
+                                <div class="task-category">${task.category}</div>
+                                <div class="task-text">${task.delo}</div>
+                            </div>
+                            ${isParent ? `
+                            <div class="task-actions">
+                                <button class="btn btn-yellow" onclick="editTask(${task.index})">✏️</button>
+                            </div>` : ''}
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function getMonthName(month) {
+            const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+                'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+            ];
+            return months[month] || '';
+        }
+
+        // ===== ДОБАВЛЕНИЕ ДЕЛА =====
+        function openAddTaskModal() {
+            if (!isParent || isSaving) return;
+            editingTaskIndex = -1;
+            selectedDate = new Date();
+            showModal('➕ Добавить дело', getTaskForm());
+        }
+
+        // ===== РЕДАКТИРОВАНИЕ ДЕЛА =====
+        function editTask(index) {
+            if (!isParent || isSaving) return;
+            editingTaskIndex = index;
+            const task = allData[index];
+            selectedDate = parseDate(task.date);
+            showModal('✏️ Редактировать дело', getTaskForm(task));
+        }
+
+        function parseDate(dateStr) {
+            const parts = dateStr.split('.');
+            return new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+        }
+
+        function getTaskForm(task) {
+            const isEdit = task !== undefined;
+            const today = new Date();
+            
+            let fromHour = '10', fromMin = '00', toHour = '10', toMin = '20';
+            let category = '';
+            let delo = '';
+
+            if (isEdit) {
+                const [from, to] = task.time.split('-');
+                if (from) {
+                    const [fh, fm] = from.split(':');
+                    fromHour = fh || '10';
+                    fromMin = fm || '00';
+                }
+                if (to) {
+                    const [th, tm] = to.split(':');
+                    toHour = th || '10';
+                    toMin = tm || '20';
+                }
+                category = task.category;
+                delo = task.delo;
+            }
+
+            let html = `
+                <label>📅 Выберите день</label>
+                <div id="calendarContainer"></div>
+
+                <label>🕐 Время</label>
+                <div class="time-selectors">
+                    <select id="timeFromHour">
+                        ${getHourOptions(fromHour)}
+                    </select>
+                    <span class="time-sep">:</span>
+                    <select id="timeFromMin">
+                        ${getMinuteOptions(fromMin)}
+                    </select>
+                    <span class="time-sep">—</span>
+                    <select id="timeToHour">
+                        ${getHourOptions(toHour)}
+                    </select>
+                    <span class="time-sep">:</span>
+                    <select id="timeToMin">
+                        ${getMinuteOptions(toMin)}
+                    </select>
+                </div>
+
+                <label>📚 Что хотите добавить?</label>
+                <div class="btn-group">
+                    <button class="btn btn-purple" onclick="selectCategory('Уроки')">📚 Уроки</button>
+                    <button class="btn btn-yellow" onclick="selectCategory('Дело по дому')">🏠 Дело по дому</button>
+                    <button class="btn btn-blue" onclick="selectCategory('Качество')">⭐ Качество</button>
+                </div>
+                <div id="categoryContent" style="margin-top:12px;"></div>
+
+                <div class="btn-group" style="margin-top:16px;">
+                    <button class="btn btn-success" onclick="saveTask()">💾 Сохранить</button>
+                    <button class="btn btn-danger" onclick="closeModal()">Отмена</button>
+                </div>
+            `;
+
+            setTimeout(() => {
+                renderCalendar(selectedDate);
+                if (isEdit) {
+                    selectCategory(category);
+                    setTimeout(() => {
+                        const select = document.getElementById('categorySelect');
+                        if (select) {
+                            for (let opt of select.options) {
+                                if (opt.value === delo || opt.text === delo) {
+                                    opt.selected = true;
+                                    break;
+                                }
+                            }
+                        }
+                        const custom = document.getElementById('customCategoryInput');
+                        if (custom && !select?.value) {
+                            custom.value = delo;
+                        }
+                    }, 100);
+                }
+            }, 50);
+
+            return html;
+        }
+
+        function getHourOptions(selected) {
+            let html = '';
+            for (let i = 0; i < 24; i++) {
+                const h = String(i).padStart(2, '0');
+                html += `<option value="${h}" ${h === selected ? 'selected' : ''}>${h}</option>`;
+            }
+            return html;
+        }
+
+        function getMinuteOptions(selected) {
+            let html = '';
+            for (let i = 0; i < 60; i += 5) {
+                const m = String(i).padStart(2, '0');
+                html += `<option value="${m}" ${m === selected ? 'selected' : ''}>${m}</option>`;
+            }
+            return html;
+        }
+
+        function renderCalendar(date) {
+            const container = document.getElementById('calendarContainer');
+            if (!container) return;
+
+            const year = date.getFullYear();
+            const month = date.getMonth();
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            let html = `
+                <div class="calendar-nav">
+                    <button class="btn" onclick="changeMonth(-1)">◀</button>
+                    <span class="month-year">${getMonthName(month)} ${year}</span>
+                    <button class="btn" onclick="changeMonth(1)">▶</button>
+                </div>
+                <div class="calendar-grid">
+                    <div class="day-cell weekday">Пн</div>
+                    <div class="day-cell weekday">Вт</div>
+                    <div class="day-cell weekday">Ср</div>
+                    <div class="day-cell weekday">Чт</div>
+                    <div class="day-cell weekday">Пт</div>
+                    <div class="day-cell weekday">Сб</div>
+                    <div class="day-cell weekday">Вс</div>
+            `;
+
+            const startOffset = firstDay === 0 ? 6 : firstDay - 1;
+
+            for (let i = 0; i < startOffset; i++) {
+                html += `<div class="day-cell other-month"></div>`;
+            }
+
+            const today = new Date();
+            for (let d = 1; d <= daysInMonth; d++) {
+                const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+                const isSelected = d === selectedDate.getDate() && month === selectedDate.getMonth() && year ===
+                    selectedDate.getFullYear();
+                html += `
+                    <div class="day-cell ${isSelected ? 'selected' : ''}" onclick="selectDay(${d})">
+                        ${d}
+                        ${isToday ? '●' : ''}
+                    </div>
+                `;
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function changeMonth(delta) {
+            selectedDate.setMonth(selectedDate.getMonth() + delta);
+            renderCalendar(selectedDate);
+        }
+
+        function selectDay(day) {
+            selectedDate.setDate(day);
+            renderCalendar(selectedDate);
+        }
+
+        function selectCategory(category) {
+            const container = document.getElementById('categoryContent');
+            if (!container) return;
+
+            const items = CATEGORIES[category] || [];
+            let html = `
+                <select id="categorySelect" style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.05);border:1px solid #00ae00;border-radius:10px;color:#fff;font-size:15px;">
+                    <option value="">Выберите из списка</option>
+                    ${items.map(item => `<option value="${item}">${item}</option>`).join('')}
+                </select>
+                <label style="margin-top:8px;">Или введите свой вариант</label>
+                <input type="text" id="customCategoryInput" placeholder="Свой вариант..." style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.05);border:1px solid #00ae00;border-radius:10px;color:#fff;font-size:15px;">
+                <input type="hidden" id="selectedCategory" value="${category}">
+            `;
+
+            container.innerHTML = html;
+        }
+
+        async function saveTask() {
+            if (isSaving) return;
+            
+            const category = document.getElementById('selectedCategory')?.value || '';
+            const select = document.getElementById('categorySelect');
+            const custom = document.getElementById('customCategoryInput');
+
+            let delo = '';
+            if (select && select.value) {
+                delo = select.value;
+            } else if (custom && custom.value.trim()) {
+                delo = custom.value.trim();
+            }
+
+            if (!delo) {
+                showModalMessage('Ошибка', 'Выберите или введите дело!');
+                return;
+            }
+
+            const date = `${String(selectedDate.getDate()).padStart(2,'0')}.${String(selectedDate.getMonth()+1).padStart(2,'0')}.${selectedDate.getFullYear()}`;
+
+            const fromHour = document.getElementById('timeFromHour')?.value || '10';
+            const fromMin = document.getElementById('timeFromMin')?.value || '00';
+            const toHour = document.getElementById('timeToHour')?.value || '10';
+            const toMin = document.getElementById('timeToMin')?.value || '20';
+            const time = `${fromHour}:${fromMin}-${toHour}:${toMin}`;
+
+            const taskData = {
+                name: currentChild,
+                date: date,
+                time: time,
+                category: category,
+                delo: delo
+            };
+
+            if (editingTaskIndex >= 0 && editingTaskIndex < allData.length) {
+                // Редактирование - заменяем существующую запись
+                allData[editingTaskIndex] = taskData;
+            } else {
+                // Добавление новой записи
+                allData.push(taskData);
+            }
+
+            await saveDataToFile();
+            closeModal();
+            renderFeed();
+            showModalMessage('Успех', '✅ Дело сохранено!');
+        }
+
+        // ===== СОХРАНЕНИЕ В ФАЙЛ =====
+        async function saveDataToFile() {
+            if (isSaving) return;
+            isSaving = true;
+
+            const overlay = document.getElementById('saveOverlay');
+            const circle = document.getElementById('progressCircle');
+            const text = document.getElementById('circleText');
+            const statusText = document.getElementById('saveStatusText');
+            const container = document.getElementById('circleProgress');
+            container.classList.remove('done');
+            overlay.classList.add('active');
+
+            const circumference = 2 * Math.PI * 54;
+
+            let content = 'PASSORD_' + currentPassword + '\n\n';
+
+            allData.forEach(item => {
+                content += `NAME_${item.name}\n`;
+                content += `DATE_${item.date}\n`;
+                content += `TIME_${item.time}\n`;
+                content += `CATEGORY_${item.category}\n`;
+                content += `DELO_${item.delo}\n\n`;
+            });
+
+            try {
+                const url = SCRIPT_URL + '?action=save&text=' + encodeURIComponent(content);
+                
+                let progressVal = 0;
+                const interval = setInterval(() => {
+                    progressVal += Math.random() * 10;
+                    if (progressVal > 90) progressVal = 90;
+                    const offset = circumference - (progressVal / 100) * circumference;
+                    circle.style.strokeDashoffset = offset;
+                    text.textContent = Math.round(progressVal) + '%';
+                }, 100);
+
+                const response = await fetch(url);
+                const result = await response.json();
+
+                clearInterval(interval);
+
+                if (result.success) {
+                    circle.style.strokeDashoffset = 0;
+                    text.textContent = '100%';
+                    container.classList.add('done');
+                    statusText.textContent = '✅ Сохранено!';
+                    statusText.style.color = '#00ae00';
+                    
+                    setTimeout(() => {
+                        overlay.classList.remove('active');
+                        container.classList.remove('done');
+                        isSaving = false;
+                    }, 1500);
+                } else {
+                    statusText.textContent = '❌ Ошибка: ' + (result.error || 'Неизвестная ошибка');
+                    statusText.style.color = '#ef4444';
+                    setTimeout(() => {
+                        overlay.classList.remove('active');
+                        isSaving = false;
+                    }, 2000);
+                }
+            } catch (error) {
+                overlay.classList.remove('active');
+                isSaving = false;
+                showModalMessage('Ошибка', '❌ ' + error.message);
+            }
+        }
+
+        // ===== ДИАГРАММЫ =====
+        function showCharts() {
+            document.getElementById('childSelectScreen').classList.remove('active');
+            document.getElementById('feedScreen').classList.remove('active');
+            document.getElementById('chartScreen').classList.add('active');
+            showBarChart();
+        }
+
+        function goBackFromCharts() {
+            document.getElementById('chartScreen').classList.remove('active');
+            if (currentChild) {
+                document.getElementById('feedScreen').classList.add('active');
+            } else {
+                document.getElementById('childSelectScreen').classList.add('active');
+            }
+        }
+
+        function showBarChart() {
+            const canvas = document.getElementById('chartCanvas');
+            const ctx = canvas.getContext('2d');
+            const data = getChartData();
+
+            canvas.width = canvas.parentElement.clientWidth || 400;
+            canvas.height = 300;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const padding = 60;
+            const chartWidth = canvas.width - padding * 2;
+            const chartHeight = canvas.height - padding * 2;
+            const maxValue = Math.max(...data.map(d => d.count), 1);
+
+            const colors = ['#8B5CF6', '#FBBF24', '#3B82F6'];
+            const barWidth = chartWidth / data.length * 0.6;
+            const gap = chartWidth / data.length;
+
+            data.forEach((item, index) => {
+                const x = padding + index * gap + (gap - barWidth) / 2;
+                const height = (item.count / maxValue) * chartHeight;
+                const y = canvas.height - padding - height;
+
+                ctx.fillStyle = colors[index % colors.length];
+                ctx.fillRect(x, y, barWidth, height);
+
+                ctx.fillStyle = '#fff';
+                ctx.font = '12px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(item.name, x + barWidth / 2, canvas.height - padding + 20);
+                ctx.fillText(item.count, x + barWidth / 2, y - 8);
+            });
+
+            updateLegend(data, colors);
+        }
+
+        function showPieChart() {
+            const canvas = document.getElementById('chartCanvas');
+            const ctx = canvas.getContext('2d');
+            const data = getChartData();
+
+            canvas.width = canvas.parentElement.clientWidth || 400;
+            canvas.height = 300;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = Math.min(canvas.width, canvas.height) / 2 - 50;
+
+            const total = data.reduce((sum, d) => sum + d.count, 0);
+            if (total === 0) {
+                ctx.fillStyle = '#666';
+                ctx.font = '16px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('Нет данных для отображения', centerX, centerY);
+                return;
+            }
+
+            const colors = ['#8B5CF6', '#FBBF24', '#3B82F6'];
+            let startAngle = -Math.PI / 2;
+
+            data.forEach((item, index) => {
+                const sliceAngle = (item.count / total) * 2 * Math.PI;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+                ctx.closePath();
+                ctx.fillStyle = colors[index % colors.length];
+                ctx.fill();
+                ctx.strokeStyle = '#0a0a0f';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                startAngle += sliceAngle;
+            });
+
+            updateLegend(data, colors);
+        }
+
+        function getChartData() {
+            const counts = {};
+            CHILDREN.forEach(child => {
+                counts[child.name] = allData.filter(d => d.name === child.name).length;
+            });
+            return CHILDREN.map(child => ({
+                name: child.name,
+                count: counts[child.name] || 0
+            }));
+        }
+
+        function updateLegend(data, colors) {
+            const legend = document.getElementById('chartLegend');
+            legend.innerHTML = data.map((item, index) => `
+                <div class="chart-legend-item">
+                    <div class="color-box" style="background:${colors[index % colors.length]}"></div>
+                    ${item.name}: ${item.count}
+                </div>
+            `).join('');
+        }
+
+        // ===== НАВИГАЦИЯ =====
+        function goBackToChildren() {
+            document.getElementById('feedScreen').classList.remove('active');
+            document.getElementById('childSelectScreen').classList.add('active');
+        }
+
+        function logout() {
+            document.getElementById('childSelectScreen').classList.remove('active');
+            document.getElementById('feedScreen').classList.remove('active');
+            document.getElementById('chartScreen').classList.remove('active');
+            document.getElementById('passwordScreen').classList.remove('active');
+            document.getElementById('loginScreen').classList.add('active');
+        }
+
+        // ===== МОДАЛЬНОЕ ОКНО =====
+        function showModal(title, body) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalBody').innerHTML = body;
+            document.getElementById('modalOverlay').classList.add('active');
+
+            if (body.includes('calendarContainer')) {
+                setTimeout(() => renderCalendar(selectedDate), 100);
+            }
+        }
+
+        function showModalMessage(title, message) {
+            showModal(title, `
+                <div style="text-align:center;padding:20px 0;color:#ccc;font-size:16px;">${message}</div>
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="closeModal()">OK</button>
+                </div>
+            `);
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            isSaving = false;
+        }
+
+        // ===== ПРЕДУПРЕЖДЕНИЕ ПРИ ЗАКРЫТИИ =====
+        window.addEventListener('beforeunload', function(e) {
+            if (isSaving) {
+                e.preventDefault();
+                e.returnValue = 'Идет сохранение данных. Вы уверены, что хотите выйти?';
+                return e.returnValue;
+            }
+        });
+
+        // ===== ПОЛНОЭКРАННЫЙ РЕЖИМ =====
+        document.addEventListener('DOMContentLoaded', function() {
+            startLoading();
+
+            document.addEventListener('click', function() {
+                if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                }
+            });
+        });
+
+        // ===== ЗАПРЕТ КОПИРОВАНИЯ =====
+        document.addEventListener('copy', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // ===== РЕЗАЙЗ КАНВАСА =====
+        window.addEventListener('resize', function() {
+            if (document.getElementById('chartScreen').classList.contains('active')) {
+                const currentChart = document.getElementById('chartBarBtn').style.borderColor === '#3B82F6' ? 'bar' :
+                    'pie';
+                if (currentChart === 'bar') showBarChart();
+                else showPieChart();
+            }
+        });
+
+        console.log('👩‍🦰DDD - Dnevnik delov detey');
+    </script>
+
+</body>
+</html>
